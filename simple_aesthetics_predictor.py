@@ -10,6 +10,7 @@ from pathlib import Path
 #
 # Load the aesthetics predictor
 #
+# model_id = "shunk031/aesthetics-predictor-v1-vit-large-patch14"
 model_id = "shunk031/aesthetics-predictor-v1-vit-large-patch14"
 
 predictor = AestheticsPredictorV1.from_pretrained(model_id)
@@ -22,11 +23,13 @@ processor = CLIPProcessor.from_pretrained(model_id)
 # image = Image.open(requests.get(url, stream=True).raw)
 # load image to evaluate
 
-SAMPLE_IMAGE_PATH = Path("imgs/images_aesthetic/aesthetic5.jpg")  # 替换成你的图片路径
+SAMPLE_IMAGE_PATH = Path("imgs/images_aesthetic/aesthetic1.jpg")  # 替换成你的图片路径
 image = Image.open(SAMPLE_IMAGE_PATH).convert("RGB")
 #
 # Preprocess the image
 #
+
+start_time = time.time()
 inputs = processor(images=image, return_tensors="pt")
 
 #
@@ -40,10 +43,11 @@ inputs = {k: v.to(device) for k, v in inputs.items()}
 # Inference for the image
 #
 with torch.no_grad(): # or `torch.inference_model` in torch 1.9+
-    start_time = time.time()
+    
     outputs = predictor(**inputs)
-    end_time = time.time()
+    
 prediction = outputs.logits
 
+end_time = time.time()
 print(f"Aesthetics score: {prediction}")
 print(f"Inference time: {(end_time - start_time)*1000:.2f} ms")

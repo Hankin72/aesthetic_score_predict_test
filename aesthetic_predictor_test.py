@@ -2,13 +2,16 @@ from pathlib import Path
 import time
 
 import torch
-from aesthetic_predictor_v2_5 import convert_v2_5_from_siglip
+# from aesthetic_predictor_v2_5 import convert_v2_5_from_siglip
+from local_siglip_v2_5 import convert_v2_5_from_siglip
 from PIL import Image
 
-SAMPLE_IMAGE_PATH = Path("imgs/42044.jpg")  # 替换成你的图片路径
+SAMPLE_IMAGE_PATH = Path("imgs/images_aesthetic/aesthetic1.jpg")  # 替换成你的图片路径
 
 # load model and preprocessor
 model, preprocessor = convert_v2_5_from_siglip(
+    predictor_name_or_path="models/aesthetic_predictor_v2_5.pth",
+    encoder_model_name_or_path="models/models--google--siglip-so400m-patch14-384/snapshots/siglip-so400m-patch14-384",
     low_cpu_mem_usage=True,
     trust_remote_code=True,
 )
@@ -27,7 +30,7 @@ pixel_values = preprocessor(images=image, return_tensors="pt").pixel_values
 with torch.inference_mode():
     start_time = time.time()
     score = model(pixel_values).logits.squeeze().float().cpu().numpy()
-    end_time = time.time()
+end_time = time.time()
 
 # print result
 print(f"Aesthetics score: {score:.2f}")
