@@ -1,0 +1,5 @@
+pillow==11.2.1
+pip-chill==1.0.3
+tensorflow-cpu-aws==2.10.0
+keras==2.10.0
+numpy==1.23.5
